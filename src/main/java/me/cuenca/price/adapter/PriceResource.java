@@ -125,7 +125,7 @@ public class PriceResource {
   public Response setPrices(@PathParam("symbol") String symbol, @PathParam("year") int year, PricesPayload prices) {
     logger.info("PUT");
     Prices newPrices = new Prices(prices.prices);
-    if (pricesRepo.addYear(mapper.map(symbol), year, newPrices)) {
+    if (!pricesRepo.addYear(mapper.map(symbol), year, newPrices)) {
       return Response.noContent().header("etag", newPrices.version()).build();
     } else {
       return Response.created(getLocation(symbol, year))

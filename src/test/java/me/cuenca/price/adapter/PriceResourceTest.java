@@ -7,10 +7,12 @@ import me.cuenca.price.domain.model.Instrument;
 import me.cuenca.price.domain.model.eod.Price;
 import me.cuenca.price.domain.model.eod.Prices;
 import me.cuenca.price.domain.model.eod.PricesRepo;
+import me.cuenca.price.domain.model.eod.Quote;
 import me.cuenca.price.domain.service.Symbol;
 import me.cuenca.price.domain.service.SymbolMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -31,9 +33,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class PriceResourceTest {
+class PriceResourceTest {
   private static final String JSON;
 
   static {
@@ -66,7 +68,7 @@ public class PriceResourceTest {
   }
 
   @Test
-  void shouldThrow404() throws Exception {
+  void shouldThrow404() {
     given(pricesRepo.of(any(), anyInt(), any())).willThrow(NoSuchElementException.class);
 
     Response response = subject.eods("FR123456", 2001, "");
@@ -107,34 +109,38 @@ public class PriceResourceTest {
     return new Symbol(new Instrument(sym), new ExchangeId("NYE"));
   }
 
-//  @Test
-//  void shouldSetFullYear() {
-//    PricesPayload payload = new PricesPayload("TEST", readValue.prices);
-//    this.restTemplate.put("/symbols/TEST/prices/1995", payload);
-//
-//    ResponseEntity<PricesPayload> entity = this.restTemplate.getForEntity("/symbols/TEST/prices/1995", PricesPayload.class);
-//
-//    assertThat(entity.getStatusCode(), is(HttpStatus.OK));
-//    assertThat(entity.getBody().prices.size(), is(readValue.prices.size()));
-//
-//    Map<LocalDate, Quote> received = new HashMap<>();
-//    entity.getBody().prices.forEach(price -> received.put(price.getTimepoint(), price.getQuote()));
-//
-//    for (Price price : readValue.prices) {
-//      assertThat(price.getQuote(), is(received.get(price.getTimepoint())));
-//    }
-//  }
-//
-//  @Test
-//  void canSetOneEod() {
-//    Quote quote = new Quote(1000, 1200, 900, 950, 1_000_000);
-//    Price price = new Price(LocalDate.of(1999, 7,26), quote, new Instrument("PATCH:TEST"), new ExchangeId("TEST"));
-//
-//    String str = this.restTemplate.patchForObject("/symbols/TEST/prices/1999", price, String.class);
-//
-//    ResponseEntity<PricesPayload> entity = this.restTemplate.getForEntity("/symbols/TEST/prices/1999", PricesPayload.class);
-//
-//    assertThat(entity.getBody().prices.size(), is(1));
-//    assertThat(entity.getBody().prices.get(0), is(quote));
-//  }
+  @Test
+  void shouldCreateYear() {
+    PricesPayload payload = new PricesPayload("TEST", refValues.prices);
+    when(pricesRepo.addYear(any(), eq(1995), any())).thenReturn(true);
+
+    Response res = subject.setPrices("TEST", 1995, payload);
+
+    assertThat(res.getStatus(), is(201));
+    ArgumentCaptor<Prices> savedPrices = ArgumentCaptor.forClass(Prices.class);
+    verify(pricesRepo, times(1)).addYear(any(), eq(1995), savedPrices.capture());
+    assertThat(savedPrices.getValue().prices(), is(refValues.prices));
+  }
+
+  @Test
+  void shouldReplaceYear() {
+    PricesPayload payload = new PricesPayload("TEST", refValues.prices);
+    when(pricesRepo.addYear(any(), eq(1995), any())).thenReturn(false);
+
+    Response res = subject.setPrices("TEST", 1995, payload);
+
+    assertThat(res.getStatus(), is(204));
+    verify(pricesRepo, times(1)).addYear(any(), eq(1995), any());
+  }
+
+  @Test
+  void canSetOneEod() {
+    Quote quote = new Quote(1000, 1200, 900, 950, 1_000_000);
+    Price price = new Price(LocalDate.of(1999, 7,26), quote, new Instrument("PATCH:TEST"), new ExchangeId("TEST"));
+
+    Response resp = subject.addPrices("TEST", 1999, price);
+
+    verify(pricesRepo).add(price);
+    assertThat(resp.getStatus(), is(204));
+  }
 }
