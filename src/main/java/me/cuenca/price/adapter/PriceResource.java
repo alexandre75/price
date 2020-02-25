@@ -94,10 +94,7 @@ public class PriceResource {
     logger.info("GET " + symbol + "/" + year);
 
     try {
-      Optional<Prices> prices = pricesRepo.of(mapper.map(symbol), year, etag);
-      if (prices.isEmpty()) {
-        return Response.notModified().header("etag", etag).build();
-      }
+      Prices prices = pricesRepo.of(mapper.map(symbol), year);
       AdjustementCurve aCurve = null;
       StreamingOutput res = new StreamingOutput() {
         @Override
@@ -106,7 +103,7 @@ public class PriceResource {
           out.beginObject();
           out.name("symbol").value(symbol);
           out.name("prices").beginArray();
-          prices.get().prices().stream()
+          prices.prices().stream()
                                .map(aCurve::adjust)
                                .forEach(price -> serializer.toJson(price, Price.class, out));
           out.endArray();
@@ -114,7 +111,7 @@ public class PriceResource {
           out.close();
         }
       };
-      return Response.ok(res).header("ETag", prices.get().version())
+      return Response.ok(res).header("ETag", prices.version())
               .cacheControl(FIVE_MN_CACHE)
               .build();
     } catch(NoSuchElementException e) {
@@ -128,7 +125,7 @@ public class PriceResource {
   public Response setPrices(@PathParam("symbol") String symbol, @PathParam("year") int year, PricesPayload prices) {
     logger.info("PUT");
     Prices newPrices = new Prices(prices.prices);
-    if (pricesRepo.addYear(mapper.map(symbol), newPrices)) {
+    if (pricesRepo.addYear(mapper.map(symbol), year, newPrices)) {
       return Response.noContent().header("etag", newPrices.version()).build();
     } else {
       return Response.created(getLocation(symbol, year))

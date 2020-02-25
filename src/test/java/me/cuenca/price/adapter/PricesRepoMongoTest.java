@@ -78,10 +78,15 @@ public class PricesRepoMongoTest {
     int oldSize = prices.size();
     client.getDatabase("Price").getCollection("prices").deleteMany(new Document());
 
-    subject.addYear(new Symbol(new Instrument("FR123456"), new ExchangeId("NYE")), new Prices(prices));
+    subject.addYear(new Symbol(new Instrument("FR123456"), new ExchangeId("NYE")), 1997, new Prices(prices));
 
     prices = subject.of(new Symbol(new Instrument("FR123456"), new ExchangeId("NYE")), 1997)
             .prices();
     assertThat(prices.size()).isEqualTo(oldSize);
+  }
+
+  @Test
+  void shouldDetectOutofRangeEods() {
+
   }
 }

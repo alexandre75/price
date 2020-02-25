@@ -7,4 +7,11 @@ import java.util.List;
 public class PricesPayload {
   public String symbol;
   public List<Price> prices;
+
+  private PricesPayload() {}
+
+  public PricesPayload(String symbol, List<Price> prices) {
+    this.symbol = symbol;
+    this.prices = prices;
+  }
 }

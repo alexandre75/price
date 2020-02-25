@@ -19,17 +19,17 @@ public class PricesTranslator {
   private List<Price> quotes;
   private int year;
 
-  public PricesTranslator(Symbol symbol, List<Price> quotes) {
+  public PricesTranslator(Symbol symbol, int year, List<Price> quotes) {
     this.symbol = symbol;
     this.quotes = quotes;
-    year = quotes.iterator().next().getTimepoint().getYear();
+    this.year = year;
   }
 
   public Document toDocument() {
     Map<String, Object> priceMap = new HashMap<>();
 
     for (Price quote : quotes) {
-      checkState(quote.getTimepoint().getYear() == year);
+      checkState(quote.getTimepoint().getYear() == year, quote);
 
       ((Document)priceMap.computeIfAbsent(quote.getTimepoint().getMonth().name(), k -> new Document()))
               .put(Integer.toString(quote.getTimepoint().getDayOfMonth()), quote.getQuote().toDocument());

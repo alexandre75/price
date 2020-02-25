@@ -46,4 +46,14 @@ public class Price {
   public Price withQuote(Quote toQuote) {
     return new Price(timepoint, toQuote, instrument, exchange);
   }
+
+  @Override
+  public String toString() {
+    return "Price{" +
+            "timepoint=" + timepoint +
+            ", quote=" + quote +
+            ", instrument=" + instrument +
+            ", exchange=" + exchange +
+            '}';
+  }
 }

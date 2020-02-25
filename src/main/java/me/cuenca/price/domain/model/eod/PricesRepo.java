@@ -34,5 +34,5 @@ public interface PricesRepo {
    * @param prices
    * @return true if the new otherwise false
    */
-  boolean addYear(Symbol symbol, Prices prices);
+  boolean addYear(Symbol symbol, int year, Prices prices);
 }

@@ -62,10 +62,11 @@ public class PricesRepoMongo implements PricesRepo {
     List<Price> quotes;
     Document price = prices.find(filter(new Price(LocalDate.of(i, 1, 1), null,
             symbol.getInstrument(), symbol.getExchangeId()))).first();
-    String dbVersion = price.getInteger("version").toString();
     if (price == null) {
       throw new NoSuchElementException("No EOD found");
-    } else if (dbVersion.equals(version)) {
+    }
+    String dbVersion = price.getInteger("version").toString();
+    if (dbVersion.equals(version)) {
       return Optional.empty();
     } else {
       List<Price> res = new ArrayList<>();
@@ -82,13 +83,17 @@ public class PricesRepoMongo implements PricesRepo {
   }
 
   @Override
-  public boolean addYear(Symbol symbol, Prices quotes) {
-    PricesTranslator translator = new PricesTranslator(symbol, quotes.prices());
-    Document replacement = translator.toDocument();
-    UpdateResult updateResult = prices.replaceOne(filter(symbol, translator.getYear()),
-            replacement, OPTIONS);
-    quotes.setVersion(replacement.getInteger("version").toString());
-    return updateResult.getMatchedCount() == 1;
+  public boolean addYear(Symbol symbol, int year, Prices quotes) {
+    try {
+      PricesTranslator translator = new PricesTranslator(symbol, year, quotes.prices());
+      Document replacement = translator.toDocument();
+      UpdateResult updateResult = prices.replaceOne(filter(symbol, translator.getYear()),
+              replacement, OPTIONS);
+      quotes.setVersion(replacement.getInteger("version").toString());
+      return updateResult.getMatchedCount() == 1;
+    } catch(IllegalStateException e) {
+      throw new IllegalArgumentException(symbol + "," + year, e);
+    }
   }
 
   private Bson filter(Price price) {

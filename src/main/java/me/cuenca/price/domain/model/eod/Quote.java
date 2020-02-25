@@ -1,8 +1,12 @@
 package me.cuenca.price.domain.model.eod;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Objects;
 import com.google.gson.annotations.JsonAdapter;
 import com.mongodb.annotations.Immutable;
 import com.mongodb.annotations.NotThreadSafe;
+import me.cuenca.price.adapter.MoneyDeserializeJack;
 import me.cuenca.price.adapter.MoneyDeserializer;
 import me.cuenca.price.domain.model.adjust.CorpEvent;
 
@@ -16,18 +20,28 @@ public final class Quote {
   private static double delta = .08 / 250D;
   private static double VOL = .20 / Math.sqrt(250D);
 
+  @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
   private int open;
 
+  @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
   private int high;
 
+  @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
   private int low;
 
+  @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
   private int close;
+
+  @JsonDeserialize
   private int volume;
+
+  // for Jackson
+  private Quote() {
+  }
 
   public Quote(int open, int high, int low, int close, int volume) {
     this.open = open;
@@ -87,5 +101,33 @@ public final class Quote {
       return new Quote((int) Math.round(open), (int) Math.round(high), (int) Math.round(low),
                         (int) Math.round(close), (int) Math.round(volume));
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Quote quote = (Quote) o;
+    return open == quote.open &&
+            high == quote.high &&
+            low == quote.low &&
+            close == quote.close &&
+            volume == quote.volume;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(open, high, low, close, volume);
+  }
+
+  @Override
+  public String toString() {
+    return "Quote{" +
+            "open=" + open +
+            ", high=" + high +
+            ", low=" + low +
+            ", close=" + close +
+            ", volume=" + volume +
+            '}';
   }
 }
