@@ -10,6 +10,7 @@ import me.cuenca.price.domain.model.eod.Quote;
 import me.cuenca.price.domain.service.Symbol;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 public class PricesRepoMongoTest {
 
   private PricesRepoMongo subject;
