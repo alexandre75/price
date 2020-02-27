@@ -1,6 +1,7 @@
 package me.cuenca.price.adapter;
 
 import com.mongodb.MongoClient;
+import me.cuenca.price.port.adapter.mongo.PricesRepoMongo;
 import me.cuenca.price.domain.model.ExchangeId;
 import me.cuenca.price.domain.model.Instrument;
 import me.cuenca.price.domain.model.eod.Price;

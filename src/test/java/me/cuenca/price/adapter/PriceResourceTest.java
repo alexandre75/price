@@ -2,6 +2,8 @@ package me.cuenca.price.adapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.cuenca.price.PriceModule;
+import me.cuenca.price.port.adapter.rest.PriceResource;
+import me.cuenca.price.port.adapter.rest.PricesPayload;
 import me.cuenca.price.domain.model.ExchangeId;
 import me.cuenca.price.domain.model.Instrument;
 import me.cuenca.price.domain.model.eod.Price;

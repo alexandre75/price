@@ -1,3 +1,15 @@
+buildscript {
+	ext {
+		osPackageVersion = "8.1.0"
+	}
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath("com.netflix.nebula:gradle-ospackage-plugin:${osPackageVersion}")
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.2.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -35,4 +47,67 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+apply plugin: "nebula.ospackage"
+
+// OS Package plugin configuration
+ospackage {
+    packageName = "price"
+
+    // Uses the main project version
+    version = "${project.version}"
+
+    /* Could be anything - in our production builds,
+       this is set to the git commit hash */
+    release = 1
+
+    os = LINUX
+    type = BINARY
+    arch = NOARCH
+
+    /* Our install scripts - see the full code for examples.
+       They usually do simple prep/cleanup tasks */
+    preInstall file("scripts/preInstall.sh")
+    //postInstall file("scripts/rpm/postInstall.sh")
+    preUninstall file("scripts/preUninstall.sh")
+    //postUninstall file("scripts/rpm/postUninstall.sh")
+
+    // Sets our working directory and permissions, basically
+    into "/usr/lib/price"
+    user "price"
+    permissionGroup "price"
+
+    // Copy the actual .jar file
+    from(jar.outputs.files) {
+        // Strip the version from the jar filename
+        rename { String fileName ->
+            fileName.replace("-${project.version}", "")
+        }
+        fileMode 0500
+        into "./"
+    }
+
+    // Copy the config files
+    from("install/conf") {
+        fileType CONFIG | NOREPLACE
+        fileMode 0754
+        into "/etc/"
+    }
+	
+	from("install/service") {
+		fileType CONFIG | NOREPLACE
+		fileMode 0754
+		into "/usr/lib/price"
+	}
+}
+
+buildDeb {
+    user "price"
+    permissionGroup "price"
+    directory("/var/log", 0755)
+    link("/etc/systemd/user/price.service",
+         "/usr/lib/price/price.service")
+    link("/opt/local/daemon-demo/bin/daemon-demo.conf",
+         "/opt/local/daemon-demo/conf/daemon-demo.conf")
 }

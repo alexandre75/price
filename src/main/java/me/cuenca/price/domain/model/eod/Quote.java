@@ -1,13 +1,12 @@
 package me.cuenca.price.domain.model.eod;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.JsonAdapter;
 import com.mongodb.annotations.Immutable;
 import com.mongodb.annotations.NotThreadSafe;
-import me.cuenca.price.adapter.MoneyDeserializeJack;
-import me.cuenca.price.adapter.MoneyDeserializer;
+import me.cuenca.price.port.adapter.rest.MoneyDeserializeJack;
+import me.cuenca.price.port.adapter.rest.MoneyDeserializer;
 import me.cuenca.price.domain.model.adjust.CorpEvent;
 
 import java.util.Arrays;
