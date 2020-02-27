@@ -8,11 +8,8 @@ pipeline {
 
     stages {
         stage('build') {
-	    tools {
-	    	  gradle "gradle621"
-	    }
             steps {
-                sh './gradlew build'
+                sh './gradlew clean build'
             }
 	    post {
     	     	 always {
