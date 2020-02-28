@@ -12,6 +12,7 @@ import me.cuenca.price.domain.model.eod.PricesRepo;
 import me.cuenca.price.domain.model.eod.Quote;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
@@ -34,6 +35,7 @@ public class PricesRepoMongo implements PricesRepo {
 
   private MongoCollection<Document> prices;
 
+  @Autowired
   public PricesRepoMongo(MongoClient client, PriceConf conf) {
     prices = client.getDatabase(conf.getMongoDb()).getCollection("prices");
     prices.createIndex(new Document("isin", 1).append("excode", 1).append("year", 1));

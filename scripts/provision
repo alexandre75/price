@@ -1,9 +1,10 @@
 #!/bin/sh
 host=$1
 stage=$2
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build/distributions/price_0.0.1~SNAPSHOT-1_amd64.deb $host:~/
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 192.168.45.45 "sudo apt-get install -y ~/price_0.0.1~SNAPSHOT-1_amd64.deb"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 192.168.45.45 "sudo rm -f ~/*.deb"
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build/distributions/price_*_amd64.deb $host:~/
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 192.168.45.45 "sudo rm -f apt-get install -y ~/price_*_amd64.deb"
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null conf/application.properties.$env $host:/tmp/application.properties
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 192.168.45.45 "sudo mv /tmp/application.properties /etc/price/
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 192.168.45.45 "sudo mv /tmp/application.properties /etc/price/"
 
 

@@ -23,9 +23,6 @@ import java.time.LocalDate;
 @Configuration
 public class PriceModule extends ResourceConfig {
 
-  @Autowired
-  private PriceConf conf;
-
   public PriceModule() {
     register(PriceResource.class);
   }
@@ -36,8 +33,8 @@ public class PriceModule extends ResourceConfig {
   }
 
   @Bean
-  public MongoClient mongo() {
-    return new MongoClient(conf.getMongodb());
+  public MongoClient mongo(PriceConf conf) {
+    return new MongoClient(conf.getMongoHost());
   }
 
   @Bean

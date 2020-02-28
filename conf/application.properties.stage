@@ -1,6 +1,8 @@
 mongo.db=priceTest
 mongo.host=pcalex
 
+management.endpoints.web.exposure.include=health,info
+
 logging.file=/var/log/price.log
 logging.level.com.quotemedia=INFO
 logging.level.org.springframework=ERROR
