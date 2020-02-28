@@ -1,0 +1,12 @@
+[Unit]
+Description=price
+After=syslog.target
+
+[Service]
+User=price
+WorkingDirectory=/etc/price
+ExecStart=/usr/bin/java -jar /usr/lib/price/price.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

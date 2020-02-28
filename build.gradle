@@ -53,6 +53,9 @@ apply plugin: "nebula.ospackage"
 
 // OS Package plugin configuration
 ospackage {
+    requires('openjdk-11-jre')
+
+
     packageName = "price"
 
     // Uses the main project version
@@ -64,7 +67,7 @@ ospackage {
 
     os = LINUX
     type = BINARY
-    arch = NOARCH
+    arch = "amd64"
 
     /* Our install scripts - see the full code for examples.
        They usually do simple prep/cleanup tasks */
@@ -92,13 +95,13 @@ ospackage {
     from("install/conf") {
         fileType CONFIG | NOREPLACE
         fileMode 0754
-        into "/etc/"
+        into "/etc/price"
     }
 	
 	from("install/service") {
 		fileType CONFIG | NOREPLACE
 		fileMode 0754
-		into "/usr/lib/price"
+		into "/etc/systemd/system"
 	}
 }
 
@@ -106,8 +109,4 @@ buildDeb {
     user "price"
     permissionGroup "price"
     directory("/var/log", 0755)
-    link("/etc/systemd/user/price.service",
-         "/usr/lib/price/price.service")
-    link("/opt/local/daemon-demo/bin/daemon-demo.conf",
-         "/opt/local/daemon-demo/conf/daemon-demo.conf")
 }
