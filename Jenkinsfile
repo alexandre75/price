@@ -9,11 +9,11 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh './gradlew clean build'
+                sh './gradlew clean build buildDeb'
             }
 	    post {
     	     	 always {
-		     archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+		     archiveArtifacts artifacts: 'build/distributions/*', fingerprint: true
 	 	     junit 'build/test-results/**/*.xml'
 	         }
             }
