@@ -17,7 +17,7 @@ plugins {
 }
 
 group = 'me.cuenca'
-version = '0.0.1-SNAPSHOT'
+version = "0.1"
 sourceCompatibility = '1.11'
 
 repositories {
@@ -63,7 +63,7 @@ ospackage {
 
     /* Could be anything - in our production builds,
        this is set to the git commit hash */
-    release = 1
+    release = findProperty("buildNumber")
 
     os = LINUX
     type = BINARY

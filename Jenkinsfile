@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh './gradlew clean build buildDeb'
+                sh './gradlew clean build buildDeb -DbuildNumber=$BUILD_NUMBER'
             }
 	    post {
     	     	 always {
