@@ -20,7 +20,8 @@ pipeline {
         }
 	stage('Acceptance') {
 	    steps {
-	    	  echo "not implemented"
+	          sh './scripts/provision 192.168.45.45 stage'
+		  sh './scripts/smoketest 192.168.45.45'
 	    }
 	}
 	stage('Deploy') {

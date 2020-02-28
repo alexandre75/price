@@ -1,0 +1,6 @@
+mongo.db=priceTest
+mongo.host=pcalex
+
+logging.file=/var/log/price.log
+logging.level.com.quotemedia=INFO
+logging.level.org.springframework=ERROR

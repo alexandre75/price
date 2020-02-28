@@ -1,6 +1,7 @@
 package me.cuenca.price.adapter;
 
 import com.mongodb.MongoClient;
+import me.cuenca.price.PriceConf;
 import me.cuenca.price.port.adapter.mongo.PricesRepoMongo;
 import me.cuenca.price.domain.model.ExchangeId;
 import me.cuenca.price.domain.model.Instrument;
@@ -34,7 +35,7 @@ public class PricesRepoMongoTest {
   @BeforeEach
   void setup() {
     client = new MongoClient("localhost");
-    subject = new PricesRepoMongo(client);
+    subject = new PricesRepoMongo(client, new PriceConf());
 
     date = LocalDate.of(1990, 01, 01);
   }

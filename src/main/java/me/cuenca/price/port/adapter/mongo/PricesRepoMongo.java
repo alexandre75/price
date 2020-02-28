@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.result.UpdateResult;
+import me.cuenca.price.PriceConf;
 import me.cuenca.price.domain.model.eod.Prices;
 import me.cuenca.price.domain.service.Symbol;
 import me.cuenca.price.domain.model.eod.Price;
@@ -33,8 +34,8 @@ public class PricesRepoMongo implements PricesRepo {
 
   private MongoCollection<Document> prices;
 
-  public PricesRepoMongo(MongoClient client) {
-    prices = client.getDatabase("Price").getCollection("prices");
+  public PricesRepoMongo(MongoClient client, PriceConf conf) {
+    prices = client.getDatabase(conf.getMongoDb()).getCollection("prices");
     prices.createIndex(new Document("isin", 1).append("excode", 1).append("year", 1));
   }
 

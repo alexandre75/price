@@ -13,6 +13,7 @@ import me.cuenca.price.domain.model.Instrument;
 import me.cuenca.price.domain.service.Symbol;
 import me.cuenca.price.domain.service.SymbolMapper;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,9 @@ import java.time.LocalDate;
 @Configuration
 public class PriceModule extends ResourceConfig {
 
+  @Autowired
+  private PriceConf conf;
+
   public PriceModule() {
     register(PriceResource.class);
   }
@@ -30,9 +34,10 @@ public class PriceModule extends ResourceConfig {
   public SymbolMapper symbolMapper() {
     return sym -> new Symbol(new Instrument(sym), new ExchangeId("NYE"));
   }
+
   @Bean
   public MongoClient mongo() {
-    return new MongoClient("localhost");
+    return new MongoClient(conf.getMongodb());
   }
 
   @Bean
