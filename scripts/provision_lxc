@@ -19,4 +19,4 @@ sudo lxc exec price -- systemctl daemon-reload
 sudo lxc file push ./conf/application.properties.$env price/usr/lib/price/application.properties
 sudo lxc file push ./conf/application.properties.$env price/etc/price/application.properties
 
-sudo lxc exec price -- systemctl start price
+sudo lxc exec price -- systemctl restart price

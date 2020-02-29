@@ -2,7 +2,7 @@
 
 if [ $# != 1 ]
 then
-    echo "usage : $0 <port>"
+    echo "usage : $0 <host:port>"
     exit 1
 fi
 
@@ -13,8 +13,15 @@ PORT=$1
 sudo systemctl start mongodb
 sudo lxc launch images:9d00c7547946 price
 
-container_ip=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
-line_number=`sudo iptables -t nat -L --line-numbers | grep ${container_ip}:8080 | awk '{print $1}'`
+while true; do
+      container_ip=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
+      if [ -n "$container_ip" ]; then
+	break
+      fi
+      sleep 1
+done	
+
+line_number=`sudo iptables -t nat -L --line-numbers | grep "price server" | awk '{print $1}'`
 sudo iptables -t nat -D PREROUTING $line_number
 sudo iptables -t nat -I PREROUTING -p tcp -i enp30s0 --dport $PORT -j DNAT --to $container_ip:8080 -m comment --comment "price server"
 
