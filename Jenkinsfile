@@ -21,7 +21,7 @@ pipeline {
 	stage('Acceptance') {
 	    steps {
 	    	  sh 'rsync -avh --delete . pcalex:~/price/'
-	          sh "ssh pcalex 'cd ~/price ; ./scripts/provision_lxc build/distributions/*.deb stage'"
+	          sh "ssh pcalex 'cd ~/price ; ./scripts/provision_lxc build/distributions/*.deb stage 8080'"
 		  sh './scripts/smoketest pcalex:8080'
 	    }
 	}
