@@ -4,6 +4,8 @@ port=$1
 
 #CONTAINER_IP=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
 
+sleep 3
+
 cd scripts
 curl -X PUT -H "Content-Type: application/json" http://$port/symbols/FR123456/prices/1995 --data "@prices.json"
 status=$(curl -sI http://$port/symbols/FR123456/prices/1995 | head -n 1)
