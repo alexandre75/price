@@ -15,7 +15,6 @@ import me.cuenca.price.domain.service.SymbolMapper;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,9 +35,9 @@ public class PriceModule extends ResourceConfig {
   }
 
   @Bean
-  public MongoClient mongo(@Value("${mongo.host}") String host) {
-    logger.info("Host " + host);
-    return new MongoClient(host);
+  public MongoClient mongo(MongoConf conf) {
+    logger.info("Host " + conf.getHost());
+    return new MongoClient(conf.getHost());
   }
 
   @Bean
