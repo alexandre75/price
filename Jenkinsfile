@@ -20,7 +20,7 @@ pipeline {
         }
 	stage('Acceptance') {
 	    steps {
-	          sh './scripts/provision 192.168.45.45 stage'
+	          sh './scripts/provision_lxc build/distributions/*.deb stage'
 		  sh './scripts/smoketest 192.168.45.45'
 	    }
 	}

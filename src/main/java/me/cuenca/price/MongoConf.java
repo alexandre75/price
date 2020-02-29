@@ -1,19 +1,20 @@
 package me.cuenca.price;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
-@ConfigurationProperties("application.properties")
-public class PriceConf {
-  private String mongoHost;
-  private String mongoDb = "Price";
+@Configuration
+@ConfigurationProperties("mongo")
+public class MongoConf {
+  private String host;
+  private String db = "Price";
 
   public String getMongoHost() {
-    return mongoHost;
+    return host;
   }
 
   public String getMongoDb() {
-    return mongoDb;
+    return db;
   }
 }

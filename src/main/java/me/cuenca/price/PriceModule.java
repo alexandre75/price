@@ -13,7 +13,9 @@ import me.cuenca.price.domain.model.Instrument;
 import me.cuenca.price.domain.service.Symbol;
 import me.cuenca.price.domain.service.SymbolMapper;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +24,7 @@ import java.time.LocalDate;
 
 @Configuration
 public class PriceModule extends ResourceConfig {
+  private static Logger logger = LoggerFactory.getLogger(PriceModule.class);
 
   public PriceModule() {
     register(PriceResource.class);
@@ -33,8 +36,9 @@ public class PriceModule extends ResourceConfig {
   }
 
   @Bean
-  public MongoClient mongo(PriceConf conf) {
-    return new MongoClient(conf.getMongoHost());
+  public MongoClient mongo(@Value("${mongo.host}") String host) {
+    logger.info("Host " + host);
+    return new MongoClient(host);
   }
 
   @Bean

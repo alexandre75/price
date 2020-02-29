@@ -1,5 +1,6 @@
 mongo.db=priceTest
-mongo.host=pcalex
+# DNS does not work
+mongo.host=192.168.45.225
 
 management.endpoints.web.exposure.include=health,info
 

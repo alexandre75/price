@@ -78,7 +78,7 @@ ospackage {
     /* Our install scripts - see the full code for examples.
        They usually do simple prep/cleanup tasks */
     preInstall file("scripts/preInstall.sh")
-    //postInstall file("scripts/rpm/postInstall.sh")
+    postInstall file("scripts/postInstall.sh")
     preUninstall file("scripts/preUninstall.sh")
     //postUninstall file("scripts/rpm/postUninstall.sh")
 

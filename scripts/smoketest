@@ -1,2 +1,14 @@
 #!/bin/sh
 
+CONTAINER_IP=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
+
+cd scripts
+curl -X PUT -H "Content-Type: application/json" http://10.154.53.87:8080/symbols/FR123456/prices/1995 --data "@prices.json"
+status=$(curl -sI http://${CONTAINER_IP}:8080/symbols/FR123456/prices/1995 | head -n 1)
+echo $status | grep 200
+if [ $? -eq 0 ]
+then
+    exit 0
+else
+    exit 1
+fi

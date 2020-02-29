@@ -4,7 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.result.UpdateResult;
-import me.cuenca.price.PriceConf;
+import me.cuenca.price.MongoConf;
 import me.cuenca.price.domain.model.eod.Prices;
 import me.cuenca.price.domain.service.Symbol;
 import me.cuenca.price.domain.model.eod.Price;
@@ -12,6 +12,8 @@ import me.cuenca.price.domain.model.eod.PricesRepo;
 import me.cuenca.price.domain.model.eod.Quote;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ import static com.mongodb.client.model.Filters.*;
 @Service
 public class PricesRepoMongo implements PricesRepo {
   private static final ReplaceOptions OPTIONS = new ReplaceOptions();
+  private static Logger logger = LoggerFactory.getLogger(PricesRepoMongo.class);
 
   static {
     OPTIONS.upsert(true);
@@ -36,7 +39,8 @@ public class PricesRepoMongo implements PricesRepo {
   private MongoCollection<Document> prices;
 
   @Autowired
-  public PricesRepoMongo(MongoClient client, PriceConf conf) {
+  public PricesRepoMongo(MongoClient client, MongoConf conf) {
+    logger.info("Connection to " +  conf.getMongoHost());
     prices = client.getDatabase(conf.getMongoDb()).getCollection("prices");
     prices.createIndex(new Document("isin", 1).append("excode", 1).append("year", 1));
   }
