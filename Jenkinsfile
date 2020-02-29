@@ -20,8 +20,9 @@ pipeline {
         }
 	stage('Acceptance') {
 	    steps {
-	          sh './scripts/provision_lxc build/distributions/*.deb stage'
-		  sh './scripts/smoketest 192.168.45.45'
+	    	  sh 'rsync -avh --delete . pcalex:~/price/'
+	          sh "ssh pcalex 'cd ~/price ; ./scripts/provision_lxc build/distributions/*.deb stage'"
+		  sh './scripts/smoketest pcalex:8080'
 	    }
 	}
 	stage('Deploy') {
