@@ -1,27 +1,20 @@
 #!/bin/bash -x
 
+if [ $# != 2 ]
+then
+    echo usage : $0 <file> <env>
+    exit 1
+fi
+
 file=$1
 name=$(basename $1)
 env=$2
-PORT=$3
-
-# infra
-sudo systemctl start mongodb
-sudo lxc launch images:9d00c7547946 price
-PUBLIC_IP=192.168.45.225
-CONTAINER_IP=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
-
-line_number=`sudo iptables -t nat -L --line-numbers | grep ${CONTAINER_IP}:8080 | awk '{print $1}'`
-sudo iptables -t nat -D PREROUTING $line_number
-
-sudo iptables -t nat -I PREROUTING -p tcp -i enp30s0 --dport $PORT -j DNAT --to $CONTAINER_IP:8080 -m comment --comment "price server"
-
 
 # package
 sudo lxc file push $file price/tmp/
 sudo lxc file push ./conf/application.properties.$env price/etc/price/application.properties
 #sudo lxc exec price -- echo "CONF_FOLDER=/etc/price" > /usr/lib/price/${name%jar}conf
-sudo lxc exec price -- apt-get install -yf /tmp/$name
+sudo lxc exec price -- apt-get install -yf --allow-downgrades /tmp/$name
 sudo lxc exec price -- systemctl daemon-reload
 
 #config
