@@ -8,10 +8,12 @@ fi
 
 PORT=$1
 
-
-# infra
+# database
 sudo systemctl start mongodb
+
+# vhost
 sudo lxc launch images:9d00c7547946 price
+sudo lxc start price
 
 while true; do
       container_ip=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
@@ -21,6 +23,7 @@ while true; do
       sleep 1
 done	
 
+#network
 line_number=`sudo iptables -t nat -L --line-numbers | grep "price server" | awk '{print $1}'`
 sudo iptables -t nat -D PREROUTING $line_number
 sudo iptables -t nat -I PREROUTING -p tcp -i enp30s0 --dport $PORT -j DNAT --to $container_ip:8080 -m comment --comment "price server"
