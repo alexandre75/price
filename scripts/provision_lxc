@@ -12,12 +12,11 @@ env=$2
 
 # package
 sudo lxc file push $file price/tmp/
-sudo lxc file push ./conf/application.properties.$env price/etc/price/application.properties
-#sudo lxc exec price -- echo "CONF_FOLDER=/etc/price" > /usr/lib/price/${name%jar}conf
 sudo lxc exec price -- apt-get install -yf --allow-downgrades /tmp/$name
 sudo lxc exec price -- systemctl daemon-reload
 
-#config
+#config - not sure where spring takes it config so copying it twice
 sudo lxc file push ./conf/application.properties.$env price/usr/lib/price/application.properties
+sudo lxc file push ./conf/application.properties.$env price/etc/price/application.properties
 
 sudo lxc exec price -- systemctl start price
