@@ -29,6 +29,11 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntime.extendsFrom testRuntime
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jersey'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -51,9 +56,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/javax.activation/activation
 	implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
 
-    testRuntimeOnly("org.codehaus.groovy:groovy-all:2.5.2")
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation("org.spockframework:spock-spring:1.2-groovy-2.5")
+    integrationRuntime("org.codehaus.groovy:groovy-all:2.5.2")
+    integrationImplementation("org.spockframework:spock-spring:1.2-groovy-2.5")
     
 }
 
@@ -65,12 +69,6 @@ sourceSets {
         runtimeClasspath += main.output + test.output
     }
 }
-
-configurations {
-    integrationImplementation.extendsFrom testImplementation
-    integrationRuntime.extendsFrom testRuntime
-}
-
 
 task integrationTest(type: Test) {
     testClassesDirs = sourceSets.integration.output.classesDirs

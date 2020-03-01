@@ -24,6 +24,8 @@ pipeline {
 		  sh "ssh pcalex 'cd ~/price ; ./scripts/prepare_env 8080'"
 	          sh "ssh pcalex 'cd ~/price ; ./scripts/provision_lxc build/distributions/*.deb stage'"
 		  sh './scripts/smoketest pcalex:8080'
+
+		  sh './gradlew integrationTest'
 	    }
 	}
 	stage('Deploy') {
