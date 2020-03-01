@@ -5,6 +5,9 @@ pipeline {
 	skipStagesAfterUnstable()
     }
 
+    environment {
+    	SERVER = "pcalex:8080"
+    }
 
     stages {
         stage('build') {

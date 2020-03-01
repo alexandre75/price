@@ -17,6 +17,10 @@ public class EodDriver {
     return "EXCH"
   }
 
+  String givenAnExchange(String excode) {
+    return excode
+  }
+
   Map generateEods(String aStock, String anExchange, int aYear) {
     return generateEods(aStock, anExchange, aYear, 400)
   }
@@ -64,6 +68,7 @@ public class EodDriver {
 
   boolean assertEqualsEods(Map eod1, Map eod2) {
     assert eod1.symbol == eod2.symbol
+    assert eod1.prices.size == eod2.prices.size
 
     Map<String, Map> perDate = [:]
     for (Map price : eod2.prices) {
