@@ -6,7 +6,7 @@ port=$1
 
 i=0
 while true; do
-    health=$(curl -s  http://$port/actuator/health)
+    health=$(curl -sm2  http://$port/actuator/health)
     if [ "$health" = '{"status":"UP"}' ]
     then
 	break;
