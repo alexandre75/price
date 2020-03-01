@@ -61,6 +61,16 @@ dependencies {
     
 }
 
+springBoot {
+	buildInfo {
+        properties {
+            name = "Price"
+            //version = "${version}"
+            version = findProperty("buildNumber")
+        }
+    }
+}
+
 sourceSets {
     integration {
         groovy.srcDir "$projectDir/src/integration/groovy"
