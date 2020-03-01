@@ -4,7 +4,7 @@ public class ExchangeId {
   private String excode;
 
   public ExchangeId(String nye) {
-    excode = nye;
+    excode = nye.toUpperCase();
   }
 
   public String getExcode() {
