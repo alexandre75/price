@@ -21,8 +21,8 @@ while true; do
 done
 
 cd scripts
-curl -X PUT -H "Content-Type: application/json" http://$port/symbols/FR123456/prices/1995 --data "@prices.json"
-status=$(curl -sI http://$port/symbols/FR123456/prices/1995 | head -n 1)
+curl -X PUT -H "Content-Type: application/json" http://$port/prices/alex/FR123456/1995 --data "@prices.json"
+status=$(curl -sI http://$port/prices/alex/FR123456/1995 | head -n 1)
 echo $status | grep 200
 if [ $? -eq 0 ]
 then

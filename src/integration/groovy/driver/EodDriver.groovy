@@ -22,7 +22,7 @@ public class EodDriver {
   }
 
   Map generateEods(String aStock, String anExchange, int aYear, int nb) {
-    def eods = [ symbol: aStock, prices : [] ]
+    def eods = [ isin: aStock, prices : [] ]
 
     LocalDate date = LocalDate.of(aYear, 1, 1)
     double price = 1500
@@ -45,7 +45,7 @@ public class EodDriver {
   def whenStore(String aStock, String anExchange, int aYear, Map eods) {
     def json = new JsonBuilder(eods).toString()
   //  println json
-    HttpURLConnection connection = new URL("http://" + server + "/symbols/" + aStock + "/prices/" + aYear).openConnection()
+    HttpURLConnection connection = new URL("http://" + server + "/prices/" + anExchange.toLowerCase() + "/" + aStock.toLowerCase() + "/" + aYear).openConnection()
     connection.requestMethod = "PUT"
     connection.setRequestProperty("Content-Type", "application/json")
     connection.doOutput = true
@@ -59,7 +59,7 @@ public class EodDriver {
 
   def eod(String aStock, String anExchange, int aYear) {
     JsonSlurper jsonSlurper = new JsonSlurper()
-    return jsonSlurper.parse(new URL("http://" + server + "/symbols/" + aStock + "/prices/" + aYear))
+    return jsonSlurper.parse(new URL("http://" + server + "/prices/" + anExchange.toLowerCase() + "/" + aStock.toLowerCase() + "/" + aYear))
   }
 
   boolean assertEqualsEods(Map eod1, Map eod2) {
