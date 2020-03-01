@@ -27,6 +27,11 @@ pipeline {
 
 		  sh './gradlew integrationTest'
 	    }
+	    post {
+    	     	 always {
+		 	junit 'build/test-results/**/*.xml'
+	         }
+            }
 	}
 	stage('Deploy') {
             steps {
