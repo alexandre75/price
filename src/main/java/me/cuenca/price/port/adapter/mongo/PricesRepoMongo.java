@@ -41,7 +41,8 @@ public class PricesRepoMongo implements PricesRepo {
   @Autowired
   public PricesRepoMongo(MongoClient client, MongoConf conf) {
     logger.info("Mongo - Connection to " +  conf.getHost());
-    prices = client.getDatabase(conf.getMongoDb()).getCollection("prices");
+    logger.info("Using database : " + conf.getDb());
+    prices = client.getDatabase(conf.getDb()).getCollection("prices");
     prices.createIndex(new Document("isin", 1).append("excode", 1).append("year", 1));
   }
 
