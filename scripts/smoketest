@@ -4,7 +4,21 @@ port=$1
 
 #CONTAINER_IP=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
 
-sleep 3
+i=0
+while true; do
+    health=$(curl -s  http://10.154.53.147:8080/actuator/health)
+    if [ $health = '{"status":"UP"}' ]
+    then
+	break;
+    fi
+    sleep 1
+    i=$((i+1))
+    if [ $i -eq 30 ]
+    then
+	echo "server not up"
+	exit 1
+    fi
+done
 
 cd scripts
 curl -X PUT -H "Content-Type: application/json" http://$port/symbols/FR123456/prices/1995 --data "@prices.json"
