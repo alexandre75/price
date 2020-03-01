@@ -1,0 +1,9 @@
+mongo.db=priceProd
+# DNS does not work
+mongo.host=192.168.45.225
+
+management.endpoints.web.exposure.include=health,info
+
+logging.file=/var/log/price.log
+logging.level.com.quotemedia=INFO
+logging.level.org.springframework=ERROR

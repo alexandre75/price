@@ -1,22 +1,25 @@
 #!/bin/bash -x
 
-if [ $# != 1 ]
+
+
+if [ $# != 2 ]
 then
-    echo "usage : $0 <host:port>"
+    echo "usage : $0 <host:port> <lxc name>"
     exit 1
 fi
 
 PORT=$1
+LXC_NAME=$2
 
 # database
 sudo systemctl start mongodb
 
 # vhost
-sudo lxc launch images:9d00c7547946 price
-sudo lxc start price
+sudo lxc launch images:9d00c7547946 $LXC_NAME
+sudo lxc start $LXC_NAME
 
 while true; do
-      container_ip=$(sudo lxc info price | grep eth0 | grep -w inet | cut -f3)
+      container_ip=$(sudo lxc info $LXC_NAME | grep eth0 | grep -w inet | cut -f3)
       if [ -n "$container_ip" ]; then
 	break
       fi
@@ -24,7 +27,7 @@ while true; do
 done	
 
 #network
-line_number=`sudo iptables -t nat -L --line-numbers | grep "price server" | awk '{print $1}'`
+line_number=`sudo iptables -t nat -L --line-numbers | grep "$LXC_NAME server" | awk '{print $1}'`
 sudo iptables -t nat -D PREROUTING $line_number
-sudo iptables -t nat -I PREROUTING -p tcp -i enp30s0 --dport $PORT -j DNAT --to $container_ip:8080 -m comment --comment "price server"
+sudo iptables -t nat -I PREROUTING -p tcp -i enp30s0 --dport $PORT -j DNAT --to $container_ip:8080 -m comment --comment "$LXC_NAME server"
 

@@ -24,8 +24,8 @@ pipeline {
 	stage('Acceptance') {
 	    steps {
 	    	  sh 'rsync -avh --delete . pcalex:~/price/'
-		  sh "ssh pcalex 'cd ~/price ; ./scripts/prepare_env 8080'"
-	          sh "ssh pcalex 'cd ~/price ; ./scripts/provision_lxc build/distributions/*.deb stage'"
+		  sh "ssh pcalex 'cd ~/price ; ./scripts/prepare_env 8080 price_stage'"
+	          sh "ssh pcalex 'cd ~/price ; ./scripts/provision_lxc build/distributions/*.deb price_stage'"
 		  sh './scripts/smoketest pcalex:8080'
 
 		  sh './gradlew integrationTest'
@@ -39,7 +39,10 @@ pipeline {
 	stage('Deploy') {
             steps {
 	        echo "deploy"
-                //sh './deploy production'
+                  sh 'rsync -avh --delete . pcalex:~/price/'
+		  sh "ssh pcalex 'cd ~/price ; ./scripts/prepare_env 7070 price_prod'"
+	          sh "ssh pcalex 'cd ~/price ; ./scripts/provision_lxc build/distributions/*.deb price_prod'"
+		  sh './scripts/smoketest pcalex:7070'
             }
         }
     }
