@@ -22,7 +22,7 @@ apply plugin: "nebula.ospackage"
 apply plugin: 'groovy'
 
 group = 'me.cuenca'
-version = "0.1"
+version = "0.1." + findProperty("buildNumber")
 sourceCompatibility = '1.11'
 
 repositories {
@@ -65,8 +65,7 @@ springBoot {
 	buildInfo {
         properties {
             name = "Price"
-            //version = "${version}"
-            version = findProperty("buildNumber")
+            version = "${version}"
         }
     }
 }
@@ -101,7 +100,7 @@ ospackage {
 
     /* Could be anything - in our production builds,
        this is set to the git commit hash */
-    release = findProperty("buildNumber")
+    release = 1
 
     os = LINUX
     type = BINARY
