@@ -80,8 +80,9 @@ public class PricesRepoMongo implements PricesRepo {
       Document eods = price.get("eods", Document.class);
       eods.forEach((month, days) -> {
         ((Document) days).forEach((day, quote) -> {
+          @SuppressWarnings("unchecked") List<Integer> quoteList = (List<Integer>) quote;
           res.add(new Price(LocalDate.of(i, Month.valueOf(month), Integer.parseInt(day)),
-                  Quote.from((List<Integer>) quote), symbol.getInstrument(), symbol.getExchangeId()));
+                  Quote.from(quoteList), symbol.getInstrument(), symbol.getExchangeId()));
         });
       });
       quotes = res;
