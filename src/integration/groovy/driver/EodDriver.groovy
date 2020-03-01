@@ -4,6 +4,7 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
+import java.math.MathContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -18,37 +19,8 @@ public class EodDriver {
     return "EXCH"
   }
 
-//  Eods generateEods(String aStock, String anExchange, int aYear) {
-//    Eods eods = new Eods(symbol: aStock)
-//
-//      LocalDate date = LocalDate.of(aYear, 1, 1)
-//    double price = 1500
-//    int volume = 12000
-//
-//    while (date.getYear() == aYear) {
-//      eods.prices << new PriceElem(timepoint : date, quote : new Quote(open : price, high : price + 2, low : price -1, close : price, volume : volume))
-//      date = date.plusDays(1)
-//      price /= 1.01
-//      volume + 100
-//    }
-//    return eods
-//  }
-
   Map generateEods(String aStock, String anExchange, int aYear) {
-    def eods = [ symbol: aStock, prices : [] ]
-
-    LocalDate date = LocalDate.of(aYear, 1, 1)
-    double price = 1500
-    int volume = 12000
-
-    while (date.getYear() == aYear) {
-      eods["prices"] << [timepoint: date.format(DateTimeFormatter.ISO_DATE), quote: [open: price, high: price + 2, low: price -1, close: price, volume: volume]]
-
-      date = date.plusDays(1)
-      price = Math.round(price / 0.0101) / 100.0
-      volume + 100
-    }
-    return eods
+    return generateEods(aStock, anExchange, aYear, 400)
   }
 
   Map generateEods(String aStock, String anExchange, int aYear, int nb) {
@@ -59,13 +31,17 @@ public class EodDriver {
     int volume = 12000
     int count = 0
     while (date.getYear() == aYear && count++ < nb) {
-      eods["prices"] << [timepoint: date.format(DateTimeFormatter.ISO_DATE), quote: [open: price, high: price + 2, low: price -1, close: price, volume: volume]]
+      eods["prices"] << [timepoint: date.format(DateTimeFormatter.ISO_DATE), quote: [open: round(price), high: round(price + 2), low: round(price -1), close: round(price), volume: volume]]
 
       date = date.plusDays(1)
-      price = Math.round(price / 0.0101) / 100.0
+      price = price / 1.01D
       volume + 100
     }
     return eods
+  }
+
+  BigDecimal round(double d) {
+    return BigDecimal.valueOf(d).round(2)
   }
 
   def whenStore(String aStock, String anExchange, int aYear, Map eods) {
