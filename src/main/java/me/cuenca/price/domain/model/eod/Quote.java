@@ -36,13 +36,13 @@ public final class Quote {
   private int close;
 
   @JsonDeserialize
-  private int volume;
+  private long volume;
 
   // for Jackson
   private Quote() {
   }
 
-  public Quote(int open, int high, int low, int close, int volume) {
+  public Quote(int open, int high, int low, int close, long volume) {
     this.open = open;
     this.high = high;
     this.low = low;
@@ -50,11 +50,12 @@ public final class Quote {
     this.volume = volume;
   }
 
-  public static Quote from(List<Integer> quote) {
-    return new Quote(quote.get(0), quote.get(1), quote.get(2), quote.get(3), quote.get(4));
+  public static Quote from(List<? extends Number> quote) {
+    return new Quote(quote.get(0).intValue(), quote.get(1).intValue(), quote.get(2).intValue(),
+            quote.get(3).intValue(), quote.get(4).longValue());
   }
 
-  public List<Integer> toDocument() {
+  public List<Number> toDocument() {
     return Arrays.asList(open, high, low, close, volume);
   }
 

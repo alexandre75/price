@@ -21,16 +21,19 @@ public class EodDriver {
     return excode
   }
 
+  Map generateEods(String aStock, String anExchange, int aYear, int nbs) {
+    return generateEodsWithVol(aStock, anExchange, aYear, nbs, 12000)
+  }
+
   Map generateEods(String aStock, String anExchange, int aYear) {
     return generateEods(aStock, anExchange, aYear, 400)
   }
 
-  Map generateEods(String aStock, String anExchange, int aYear, int nb) {
+  Map generateEodsWithVol(String aStock, String anExchange, int aYear, int nb, long volume) {
     def eods = [ isin: aStock, prices : [] ]
 
     LocalDate date = LocalDate.of(aYear, 1, 1)
     double price = 1500
-    int volume = 12000
     int count = 0
     while (date.getYear() == aYear && count++ < nb) {
       eods["prices"] << [timepoint: date.format(DateTimeFormatter.ISO_DATE), quote: [open: round(price), high: round(price + 2), low: round(price -1), close: round(price), volume: volume]]

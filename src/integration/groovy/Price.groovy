@@ -48,4 +48,17 @@ class Price {
       }
     }
   }
+
+  @Test
+  void shouldHandleHighVolume() {
+    def stock = driver.givenAStock()
+    def exchange = driver.givenAnExchange()
+    def eods = driver.generateEodsWithVol(stock, exchange, 2000, 1, 1_000_000_000_000)
+
+    driver.whenStore(stock, exchange, 2000, eods);
+
+    def retrievedEods = driver.eod(stock, exchange, 2000)
+
+    driver.assertEqualsEods(retrievedEods, eods)
+  }
 }

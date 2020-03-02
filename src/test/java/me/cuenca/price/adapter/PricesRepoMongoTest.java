@@ -28,7 +28,7 @@ public class PricesRepoMongoTest {
 
   private LocalDate date;
 
-  private Quote quote = new Quote(1000, 1100, 900, 1050, 10000);
+  private Quote quote = new Quote(1000, 1100, 900, 1050, 1_000_000_000_000L);
 
   MongoClient client;
 
