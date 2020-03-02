@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("mongo")
 public class MongoConf {
-  private String host;
+  private String hosts;
   private String db = "Price";
 
-  public String getHost() {
-    return host;
+  public String getHosts() {
+    return hosts;
   }
 
-  public void setHost(String host) {
-    this.host = host;
+  public void setHosts(String hosts) {
+    this.hosts = hosts;
   }
 
   public String getDb() {

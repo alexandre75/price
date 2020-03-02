@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.google.common.base.Splitter;
 import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 import me.cuenca.price.port.adapter.rest.PriceResource;
 import me.cuenca.price.domain.model.ExchangeId;
 import me.cuenca.price.domain.model.Instrument;
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 @Configuration
 public class PriceModule extends ResourceConfig {
@@ -36,8 +39,11 @@ public class PriceModule extends ResourceConfig {
 
   @Bean
   public MongoClient mongo(MongoConf conf) {
-    logger.info("Host " + conf.getHost());
-    return new MongoClient(conf.getHost());
+    logger.info("Hosts " + conf.getHosts());
+    return new MongoClient(Splitter.on(',').trimResults().splitToList(conf.getHosts())
+            .stream()
+            .map(host -> new ServerAddress(host, 27017))
+            .collect(Collectors.toList()));
   }
 
   @Bean

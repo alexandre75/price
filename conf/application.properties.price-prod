@@ -1,6 +1,6 @@
 mongo.db=priceProd
 # DNS does not work
-mongo.host=192.168.45.225
+mongo.hosts=pcalex,pcdelphine,uranus
 
 management.endpoints.web.exposure.include=health,info
 
