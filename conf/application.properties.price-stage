@@ -1,6 +1,6 @@
 mongo.db=priceTest
 # DNS does not work
-mongo.hosts=pcalex,pcdelphine,uranus
+mongo.hosts=pcalex.cuenca.me,pcdelphine.cuenca.me,uranus.cuenca.me
 
 management.endpoints.web.exposure.include=health,info
 
