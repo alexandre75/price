@@ -12,7 +12,7 @@ PORT=$1
 LXC_NAME=$2
 
 # database
-sudo systemctl start mongodb
+sudo systemctl start mongod
 
 # vhost
 sudo lxc launch images:9d00c7547946 $LXC_NAME
