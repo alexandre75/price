@@ -14,6 +14,7 @@ LXC_NAME=$2
 sudo lxc file push $file $LXC_NAME/tmp/
 sudo lxc exec $LXC_NAME -- apt-get install -yf --allow-downgrades /tmp/$name
 sudo lxc exec $LXC_NAME -- systemctl daemon-reload
+sudo lxc exec $LXC_NAME -- systemctl enable price
 
 #config - not sure where spring takes it config so copying it twice
 sudo lxc file push ./conf/application.properties.$LXC_NAME $LXC_NAME/usr/lib/price/application.properties
