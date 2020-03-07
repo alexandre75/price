@@ -43,7 +43,7 @@ public class PricesRepoMongo implements PricesRepo {
     logger.info("Mongo - Connection to " +  conf.getHosts());
     logger.info("Using database : " + conf.getDb());
     prices = client.getDatabase(conf.getDb()).getCollection("prices");
-    prices.createIndex(new Document("isin", 1).append("excode", 1).append("year", 1));
+    prices.createIndex(new Document("isin", 1).append("mic", 1).append("year", 1));
   }
 
   @Override
@@ -58,7 +58,7 @@ public class PricesRepoMongo implements PricesRepo {
 
   private Document newSerie(Price price) {
     return new Document("isin", price.getInstrument().getIsin())
-            .append("excode", price.getExchange().getExcode())
+            .append("mic", price.getExchange().getMic())
             .append("year", price.getTimepoint().getYear())
             .append("version", 1)
             .append("eods", new Document(price.getTimepoint().getMonth().name(),
@@ -66,10 +66,9 @@ public class PricesRepoMongo implements PricesRepo {
   }
 
   @Override
-  public Optional<Prices> of(Symbol symbol, int i, @Nullable String version) {
+  public Optional<Prices> of(Symbol symbol, int year, @Nullable String version) {
     List<Price> quotes;
-    Document price = prices.find(filter(new Price(LocalDate.of(i, 1, 1), null,
-            symbol.getInstrument(), symbol.getExchangeId()))).first();
+    Document price = prices.find(filter(symbol, year)).first();
     if (price == null) {
       throw new NoSuchElementException("No EOD found");
     }
@@ -82,13 +81,13 @@ public class PricesRepoMongo implements PricesRepo {
       eods.forEach((month, days) -> {
         ((Document) days).forEach((day, quote) -> {
           @SuppressWarnings("unchecked") List<Integer> quoteList = (List<Integer>) quote;
-          res.add(new Price(LocalDate.of(i, Month.valueOf(month), Integer.parseInt(day)),
+          res.add(new Price(LocalDate.of(year, Month.valueOf(month), Integer.parseInt(day)),
                   Quote.from(quoteList), symbol.getInstrument(), symbol.getExchangeId()));
         });
       });
       quotes = res;
     }
-    return Optional.of(new Prices(symbol, i, quotes, dbVersion));
+    return Optional.of(new Prices(symbol, year, quotes, dbVersion));
   }
 
   @Override
@@ -107,13 +106,13 @@ public class PricesRepoMongo implements PricesRepo {
 
   private Bson filter(Price price) {
     return and(eq("isin", price.getInstrument().getIsin()),
-            eq("excode", price.getExchange().getExcode()),
+            eq("mic", price.getExchange().getMic()),
             eq("year", price.getTimepoint().getYear()));
   }
 
   private Bson filter(Symbol symbol, int year) {
     return and(eq("isin", symbol.getInstrument().getIsin()),
-            eq("excode", symbol.getExchangeId().getExcode()),
+            eq("mic", symbol.getExchangeId().getMic()),
             eq("year", year));
   }
 

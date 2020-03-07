@@ -1,13 +1,13 @@
 package me.cuenca.price.domain.model;
 
 public class ExchangeId {
-  private String excode;
+  private String mic;
 
-  public ExchangeId(String nye) {
-    excode = nye.toUpperCase();
+  public ExchangeId(String mic) {
+    this.mic = mic.toUpperCase();
   }
 
-  public String getExcode() {
-    return excode;
+  public String getMic() {
+    return mic;
   }
 }

@@ -72,7 +72,7 @@ class PriceResourceTest {
   void shouldThrow404() {
     given(pricesRepo.of(any(), anyInt(), any())).willThrow(NoSuchElementException.class);
 
-    Response response = subject.eods("NYE", "FR123456", 2001, "");
+    Response response = subject.eods("XNYS", "FR123456", 2001, "");
 
     assertThat(response.getStatus(), is(404));
   }
@@ -82,7 +82,7 @@ class PriceResourceTest {
     when(pricesRepo.of(any(), eq(2001), isNull()))
             .thenReturn(Optional.of(new Prices(symbol("FR123456"), 1995, refValues.prices, "sdf")));
 
-    Response response = subject.eods("nye", "FR123456", 2001, null);
+    Response response = subject.eods("xnys", "FR123456", 2001, null);
 
     assertThat(response.getStatus(), is(200));
     StreamingOutput prices = (StreamingOutput) response.getEntity();
@@ -101,7 +101,7 @@ class PriceResourceTest {
     given(pricesRepo.of(any(), eq(2001), eq("123")))
             .willReturn(Optional.empty());
 
-    Response response = subject.eods("nye", "FR123456", 2001, "123");
+    Response response = subject.eods("xnys", "FR123456", 2001, "123");
 
     assertThat(response.getStatus(), is(304));
   }
@@ -115,7 +115,7 @@ class PriceResourceTest {
     PricesPayload payload = new PricesPayload(refValues.prices);
     when(pricesRepo.addYear(any(), eq(1995), any())).thenReturn(true);
 
-    Response res = subject.setPrices("nye", "TEST", 1995, payload);
+    Response res = subject.setPrices("xnys", "TEST", 1995, payload);
 
     assertThat(res.getStatus(), is(201));
     ArgumentCaptor<Prices> savedPrices = ArgumentCaptor.forClass(Prices.class);
@@ -128,7 +128,7 @@ class PriceResourceTest {
     PricesPayload payload = new PricesPayload(refValues.prices);
     when(pricesRepo.addYear(any(), eq(1995), any())).thenReturn(false);
 
-    Response res = subject.setPrices("nye", "TEST", 1995, payload);
+    Response res = subject.setPrices("xnys", "TEST", 1995, payload);
 
     assertThat(res.getStatus(), is(204));
     verify(pricesRepo, times(1)).addYear(any(), eq(1995), any());
@@ -139,7 +139,7 @@ class PriceResourceTest {
     Quote quote = new Quote(1000, 1200, 900, 950, 1_000_000);
     Price price = new Price(LocalDate.of(1999, 7,26), quote, new Instrument("PATCH:TEST"), new ExchangeId("TEST"));
 
-    Response resp = subject.addPrices("nye", "TEST", 1999, price);
+    Response resp = subject.addPrices("xnys", "TEST", 1999, price);
 
     verify(pricesRepo).add(price);
     assertThat(resp.getStatus(), is(204));

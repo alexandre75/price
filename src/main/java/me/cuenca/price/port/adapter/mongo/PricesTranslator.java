@@ -36,7 +36,7 @@ public class PricesTranslator {
     }
 
     return new Document("isin", symbol.getInstrument().getIsin())
-            .append("excode", symbol.getExchangeId().getExcode())
+            .append("mic", symbol.getExchangeId().getMic())
             .append("year", year)
             .append("version", 1)
             .append("eods", new Document(priceMap))

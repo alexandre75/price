@@ -59,15 +59,15 @@ public class PriceResource {
     serializer = builder.create();
   }
 
-  @Path("{excode}/{isin}/{year}")
+  @Path("{mic}/{isin}/{year}")
   @Produces(MediaType.APPLICATION_JSON)
   @GET
-  public Response eods(@PathParam("excode") String excode, @PathParam("isin") String isin, @PathParam("year") int year
+  public Response eods(@PathParam("mic") String mic, @PathParam("isin") String isin, @PathParam("year") int year
           , @HeaderParam("If-None-Match") String etag) {
-    logger.info("GET /price/" + excode + "/" + isin + "/" + year);
+    logger.info("GET /price/" + mic + "/" + isin + "/" + year);
 
     try {
-      Optional<Prices> prices = pricesRepo.of(Symbol.of(excode, isin), year, etag);
+      Optional<Prices> prices = pricesRepo.of(Symbol.of(mic, isin), year, etag);
       if (prices.isEmpty()) {
         return Response.notModified().header("etag", etag).build();
       }
@@ -78,7 +78,7 @@ public class PriceResource {
           JsonWriter out = new JsonWriter(new OutputStreamWriter(output, Charsets.UTF_8));
           out.beginObject();
           out.name("isin").value(isin);
-          out.name("excode").value(excode);
+          out.name("mic").value(mic);
           out.name("prices").beginArray();
           prices.get().prices().forEach(price -> serializer.toJson(price, Price.class, out));
           out.endArray();
@@ -94,33 +94,33 @@ public class PriceResource {
     }
   }
 
-  @Path("{excode}/{isin}/{year}")
+  @Path("{mic}/{isin}/{year}")
   @Consumes(MediaType.APPLICATION_JSON)
   @PUT
-  public Response setPrices(@PathParam("excode") String excode, @PathParam("isin") String isin, @PathParam("year") int year, PricesPayload prices) {
-    logger.info("PUT /price/" + excode + "/" + isin + "/" + year);
+  public Response setPrices(@PathParam("mic") String mic, @PathParam("isin") String isin, @PathParam("year") int year, PricesPayload prices) {
+    logger.info("PUT /price/" + mic + "/" + isin + "/" + year);
     Prices newPrices = new Prices(prices.prices);
-    if (!pricesRepo.addYear(Symbol.of(excode, isin), year, newPrices)) {
+    if (!pricesRepo.addYear(Symbol.of(mic, isin), year, newPrices)) {
       return Response.noContent().header("etag", newPrices.version()).build();
     } else {
-      return Response.created(getLocation(excode, isin, year))
+      return Response.created(getLocation(mic, isin, year))
               .header("etag", newPrices.version()).build();
     }
   }
 
-  private static URI getLocation(String excode, @PathParam("symbol") String isin, @PathParam("year") int year) {
-    return URI.create("/price/" + excode.toLowerCase() + "/" + isin.toLowerCase() + "/" + year);
+  private static URI getLocation(String mic, @PathParam("symbol") String isin, @PathParam("year") int year) {
+    return URI.create("/price/" + mic.toLowerCase() + "/" + isin.toLowerCase() + "/" + year);
   }
 
   @Path("{symbol}/prices/{year}")
   @Consumes(MediaType.APPLICATION_JSON)
   @PATCH
-  public Response addPrices(@PathParam("excode") String excode, @PathParam("isin") String isin, @PathParam("year") int year, Price price) {
+  public Response addPrices(@PathParam("mic") String mic, @PathParam("isin") String isin, @PathParam("year") int year, Price price) {
     logger.info("PATCH");
 
-    price.update(Symbol.of(excode, isin));
+    price.update(Symbol.of(mic, isin));
     pricesRepo.add(price);
 
-    return Response.noContent().header("Location", getLocation(excode, isin, year)).build();
+    return Response.noContent().header("Location", getLocation(mic, isin, year)).build();
   }
 }

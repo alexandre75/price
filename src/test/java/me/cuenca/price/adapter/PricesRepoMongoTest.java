@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
+//@Disabled
 public class PricesRepoMongoTest {
 
   private PricesRepoMongo subject;
@@ -34,7 +34,7 @@ public class PricesRepoMongoTest {
 
   @BeforeEach
   void setup() {
-    client = new MongoClient("localhost");
+    client = new MongoClient("pcalex");
     subject = new PricesRepoMongo(client, new MongoConf());
 
     date = LocalDate.of(1990, 01, 01);
@@ -44,11 +44,11 @@ public class PricesRepoMongoTest {
   public void shouldLoadAndRetrieve() {
     subject.add(newPrice("TEST"));
 
-    Prices prices = subject.of(new Symbol(new Instrument("TEST"), new ExchangeId("NYE")), 1990);
+    Prices prices = subject.of(new Symbol(new Instrument("TEST"), new ExchangeId("XNYS")), 1990);
 
     assertThat(prices.prices().size()).isEqualTo(1L);
 
-    subject.of(new Symbol(new Instrument("TEST"), new ExchangeId("NYE")), 1990, prices.version());
+    subject.of(new Symbol(new Instrument("TEST"), new ExchangeId("XNYS")), 1990, prices.version());
   }
 
   @Test
@@ -60,7 +60,7 @@ public class PricesRepoMongoTest {
   }
 
   private Price newPrice(String symbol){
-    Price price = new Price(date, quote(), new Instrument(symbol), new ExchangeId("NYE"));
+    Price price = new Price(date, quote(), new Instrument(symbol), new ExchangeId("XNYS"));
     do {
       date = date.plus(1, ChronoUnit.DAYS);
     } while(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY);
@@ -77,15 +77,15 @@ public class PricesRepoMongoTest {
   void testPut() {
     populate();
 
-    List<Price> prices = subject.of(new Symbol(new Instrument("FR123456"), new ExchangeId("NYE")), 1997)
+    List<Price> prices = subject.of(new Symbol(new Instrument("FR123456"), new ExchangeId("XNYS")), 1997)
             .prices();
     int oldSize = prices.size();
     client.getDatabase("Price").getCollection("prices").deleteMany(new Document());
 
-    subject.addYear(new Symbol(new Instrument("FR123456"), new ExchangeId("NYE")), 1997, new Prices(prices));
-
-    prices = subject.of(new Symbol(new Instrument("FR123456"), new ExchangeId("NYE")), 1997)
+    subject.addYear(new Symbol(new Instrument("FR123456"), new ExchangeId("XNYS")), 1997, new Prices(prices));
+    prices = subject.of(new Symbol(new Instrument("FR123456"), new ExchangeId("XNYS")), 1997)
             .prices();
+
     assertThat(prices.size()).isEqualTo(oldSize);
   }
 
