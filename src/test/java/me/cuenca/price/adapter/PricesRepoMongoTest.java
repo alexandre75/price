@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@Disabled
+@Disabled
 public class PricesRepoMongoTest {
 
   private PricesRepoMongo subject;
@@ -60,7 +60,7 @@ public class PricesRepoMongoTest {
   }
 
   private Price newPrice(String symbol){
-    Price price = new Price(date, quote(), new Instrument(symbol), new ExchangeId("XNYS"));
+    Price price = new Price(date, quote(), new Symbol(new Instrument(symbol), new ExchangeId("XNYS")));
     do {
       date = date.plus(1, ChronoUnit.DAYS);
     } while(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY);

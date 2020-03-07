@@ -137,7 +137,7 @@ class PriceResourceTest {
   @Test
   void canSetOneEod() {
     Quote quote = new Quote(1000, 1200, 900, 950, 1_000_000);
-    Price price = new Price(LocalDate.of(1999, 7,26), quote, new Instrument("PATCH:TEST"), new ExchangeId("TEST"));
+    Price price = new Price(LocalDate.of(1999, 7,26), quote, new Symbol(new Instrument("PATCH:TEST"), new ExchangeId("TEST")));
 
     Response resp = subject.addPrices("xnys", "TEST", 1999, price);
 

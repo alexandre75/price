@@ -9,17 +9,15 @@ import java.time.LocalDate;
 public class Price {
   private LocalDate timepoint;
   private Quote quote;
-  private transient Instrument instrument;
-  private transient ExchangeId exchange;
+  private transient Symbol symbol;
 
   private Price() {
   }
 
-  public Price(LocalDate timepoint, Quote quote, Instrument instrument, ExchangeId exchange) {
+  public Price(LocalDate timepoint, Quote quote, Symbol symbol) {
     this.timepoint = timepoint;
     this.quote = quote;
-    this.instrument = instrument;
-    this.exchange = exchange;
+    this.symbol = symbol;
   }
 
   public LocalDate getTimepoint() {
@@ -31,20 +29,19 @@ public class Price {
   }
 
   public Instrument getInstrument() {
-    return instrument;
+    return symbol.getInstrument();
   }
 
   public ExchangeId getExchange() {
-    return exchange;
+    return symbol.getExchangeId();
   }
 
   public void update(Symbol sym) {
-    instrument = sym.getInstrument();
-    exchange = sym.getExchangeId();
+    symbol = sym;
   }
 
   public Price withQuote(Quote toQuote) {
-    return new Price(timepoint, toQuote, instrument, exchange);
+    return new Price(timepoint, toQuote, symbol);
   }
 
   @Override
@@ -52,8 +49,7 @@ public class Price {
     return "Price{" +
             "timepoint=" + timepoint +
             ", quote=" + quote +
-            ", instrument=" + instrument +
-            ", exchange=" + exchange +
+            ", symbol=" + symbol +
             '}';
   }
 }

@@ -82,7 +82,7 @@ public class PricesRepoMongo implements PricesRepo {
         ((Document) days).forEach((day, quote) -> {
           @SuppressWarnings("unchecked") List<Integer> quoteList = (List<Integer>) quote;
           res.add(new Price(LocalDate.of(year, Month.valueOf(month), Integer.parseInt(day)),
-                  Quote.from(quoteList), symbol.getInstrument(), symbol.getExchangeId()));
+                  Quote.from(quoteList), symbol));
         });
       });
       quotes = res;
