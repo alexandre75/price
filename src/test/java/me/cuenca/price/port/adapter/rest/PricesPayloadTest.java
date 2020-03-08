@@ -21,7 +21,7 @@ class PricesPayloadTest {
     PricesPayload prices = mapper.readValue(json, PricesPayload.class);
 
     Quote quote = prices.prices.get(0).getQuote();
-    assertEquals(ImmutableList.of(30727,30528,30527,30428,10000L), quote.toDocument());
+    assertEquals(ImmutableList.of(307270,305280,305270,304280,10000L), quote.toDocument());
   }
 
   @Test
@@ -31,7 +31,7 @@ class PricesPayloadTest {
     PricesPayload prices = mapper.readValue(json, PricesPayload.class);
 
     Quote quote = prices.prices.get(0).getQuote();
-    assertEquals(ImmutableList.of(30727,30528,30527,30428,10000000000000000L), quote.toDocument());
+    assertEquals(ImmutableList.of(307270,305280,305270,304280,10000000000000000L), quote.toDocument());
   }
 
 }

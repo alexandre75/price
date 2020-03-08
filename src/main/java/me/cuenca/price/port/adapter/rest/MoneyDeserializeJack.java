@@ -21,6 +21,6 @@ public class MoneyDeserializeJack extends StdDeserializer<Integer> {
 
   @Override
   public Integer deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-    return (int) Math.round(p.getDoubleValue() * 100);
+    return (int) Math.round(p.getDoubleValue() * 1000);
   }
 }
