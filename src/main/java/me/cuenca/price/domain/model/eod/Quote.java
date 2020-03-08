@@ -21,19 +21,19 @@ public final class Quote {
 
   @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
-  private int open;
+  private Integer open;
 
   @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
-  private int high;
+  private Integer high;
 
   @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
-  private int low;
+  private Integer low;
 
   @JsonDeserialize(using=MoneyDeserializeJack.class)
   @JsonAdapter(MoneyDeserializer.class)
-  private int close;
+  private Integer close;
 
   @JsonDeserialize
   private long volume;
@@ -108,11 +108,11 @@ public final class Quote {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Quote quote = (Quote) o;
-    return open == quote.open &&
-            high == quote.high &&
-            low == quote.low &&
-            close == quote.close &&
-            volume == quote.volume;
+    return volume == quote.volume &&
+            Objects.equal(open, quote.open) &&
+            Objects.equal(high, quote.high) &&
+            Objects.equal(low, quote.low) &&
+            Objects.equal(close, quote.close);
   }
 
   @Override
