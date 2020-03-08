@@ -7,7 +7,7 @@ class Price {
 
   @Before
   void setup() {
-    driver = new EodDriver(server : System.getenv("SERVER"))
+    driver = new EodDriver(server : "pcalex:8080")//System.getenv("SERVER"))
   }
 
   @Test

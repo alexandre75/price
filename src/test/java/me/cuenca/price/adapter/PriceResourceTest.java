@@ -11,7 +11,6 @@ import me.cuenca.price.domain.model.eod.Prices;
 import me.cuenca.price.domain.model.eod.PricesRepo;
 import me.cuenca.price.domain.model.eod.Quote;
 import me.cuenca.price.domain.service.Symbol;
-import me.cuenca.price.domain.service.SymbolMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

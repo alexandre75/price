@@ -3,6 +3,9 @@ package driver
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -11,10 +14,10 @@ public class EodDriver {
   String server
 
   String givenAStock() {
-    return "FOO"
+    return UUID.randomUUID()
   }
   String givenAnExchange() {
-    return "EXCH"
+    return UUID.randomUUID()
   }
 
   String givenAnExchange(String excode) {
@@ -85,6 +88,38 @@ public class EodDriver {
         println price
         println perDate.get(price["timepoint"])
         throw e
+      }
+    }
+  }
+
+    def newEod(String aStock, String anExchange, String timepoint, double open, double high, double low, double close, long volume) {
+      return [timepoint: timepoint,
+              quote: [open: round(open),
+                      high: round(high),
+                      low: round(low),
+                      close: round(close),
+                      volume: volume]]
+
+    }
+
+  def whenStoreOne(String aStock, String anExchange, int aYear, def price) {
+    def json = new JsonBuilder(price).toString()
+    //  println json
+    HttpClient client = HttpClient.newHttpClient()
+    HttpRequest request = HttpRequest.newBuilder(URI.create("http://" + server + "/prices/" + anExchange.toLowerCase() + "/" + aStock.toLowerCase() + "/" + aYear))
+                                     .header("Content-Type", "application/json")
+                                     .method("PATCH", HttpRequest.BodyPublishers.ofString(json))
+                                     .build()
+    def response = client.send(request, HttpResponse.BodyHandlers.discarding())
+    println "Server returned " + response.statusCode()
+    response.statusCode()
+  }
+
+  void assertEqualsEod(Map expectedEod, String timepoint, Map eods) {
+    for (def price : eods["prices"]) {
+      if (price["timepoint"] == timepoint) {
+        assert expectedEod == price
+        break
       }
     }
   }

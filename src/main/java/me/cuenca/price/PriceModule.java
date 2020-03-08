@@ -10,10 +10,6 @@ import com.google.common.base.Splitter;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import me.cuenca.price.port.adapter.rest.PriceResource;
-import me.cuenca.price.domain.model.ExchangeId;
-import me.cuenca.price.domain.model.Instrument;
-import me.cuenca.price.domain.service.Symbol;
-import me.cuenca.price.domain.service.SymbolMapper;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +26,6 @@ public class PriceModule extends ResourceConfig {
 
   public PriceModule() {
     register(PriceResource.class);
-  }
-
-  @Bean
-  public SymbolMapper symbolMapper() {
-    return sym -> new Symbol(new Instrument(sym), new ExchangeId("NYE"));
   }
 
   @Bean

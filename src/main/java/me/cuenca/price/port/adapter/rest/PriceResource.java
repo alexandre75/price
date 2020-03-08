@@ -7,7 +7,6 @@ import me.cuenca.price.domain.model.eod.Price;
 import me.cuenca.price.domain.model.eod.Prices;
 import me.cuenca.price.domain.model.eod.PricesRepo;
 import me.cuenca.price.domain.service.Symbol;
-import me.cuenca.price.domain.service.SymbolMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,15 +111,18 @@ public class PriceResource {
     return URI.create("/price/" + mic.toLowerCase() + "/" + isin.toLowerCase() + "/" + year);
   }
 
-  @Path("{symbol}/prices/{year}")
+  @Path("{mic}/{isin}/{year}")
   @Consumes(MediaType.APPLICATION_JSON)
   @PATCH
   public Response addPrices(@PathParam("mic") String mic, @PathParam("isin") String isin, @PathParam("year") int year, Price price) {
-    logger.info("PATCH");
+    logger.info("PATCH " + mic + "/" + isin + "/" + year);
+    try {
+      price.update(Symbol.of(mic, isin));
+      pricesRepo.add(price);
 
-    price.update(Symbol.of(mic, isin));
-    pricesRepo.add(price);
-
-    return Response.noContent().header("Location", getLocation(mic, isin, year)).build();
+      return Response.noContent().header("Location", getLocation(mic, isin, year)).build();
+    } catch(IllegalArgumentException e) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
   }
 }

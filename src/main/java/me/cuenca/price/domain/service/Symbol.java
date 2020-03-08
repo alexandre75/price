@@ -1,8 +1,10 @@
 package me.cuenca.price.domain.service;
 
+import com.google.common.base.Preconditions;
 import me.cuenca.price.domain.model.ExchangeId;
 import me.cuenca.price.domain.model.Instrument;
 
+import static com.google.common.base.Preconditions.*;
 import static java.util.Objects.requireNonNull;
 
 public final class Symbol {
@@ -15,8 +17,9 @@ public final class Symbol {
   }
 
   public static Symbol of(String excode, String isin) {
-    requireNonNull(excode);
-    requireNonNull(isin);
+    checkArgument(!excode.isBlank());
+    checkArgument(!isin.isBlank());
+
     return new Symbol(Instrument.isin(isin), new ExchangeId(excode));
   }
 
