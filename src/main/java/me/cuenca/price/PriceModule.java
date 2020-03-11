@@ -3,6 +3,7 @@ package me.cuenca.price;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -40,6 +41,7 @@ public class PriceModule extends ResourceConfig {
   @Bean
   public ObjectMapper mapper() {
     ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
     SimpleModule module = new SimpleModule();
     module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
     objectMapper.registerModule(module);

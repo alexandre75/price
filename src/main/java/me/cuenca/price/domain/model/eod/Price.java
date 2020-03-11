@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public class Price {
   private LocalDate timepoint;
   private Quote quote;
+
   private transient Symbol symbol;
 
   private Price() {
